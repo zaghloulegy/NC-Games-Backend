@@ -9,7 +9,19 @@ const app = require("../app")
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
-describe("getCategories() GET /api/categories", () => {
+
+  describe("GET /api", () => {
+    test("status: 200, responds with message 'all ok'.", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then((res) => {
+          expect(res.body).toEqual({ message: "all ok" });
+        });
+    });
+  });
+
+describe("1- getCategories() GET /api/categories", () => {
   test("getCategories responds with status 200 and returns an object of arrays of categories", () => {
     return request(app)
       .get("/api/categories")

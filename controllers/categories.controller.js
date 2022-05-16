@@ -1,6 +1,8 @@
 const { selectCategories } = require("../models/categories.model");
-const res = require("express/lib/response");
-const { param } = require("../app.js");
+
+exports.getMessage = (req, res) => {
+  res.status(200).send({ message: "all ok" });
+};
 
 exports.getCategories = (req, res, next) => {
   selectCategories()
