@@ -54,19 +54,13 @@ describe("getCategories() GET /api/categories", () => {
 });
 
 describe("GET /api/reviews/:review_id", () => {
-  test("getReviewsByID returns a 200 status and a review object", () => {
+  test("getReviewsByID returns correct object keys and values,review object", () => {
+    const review_id = 3
     return request(app)
-      .get("/api/reviews/2")
+      .get(`/api/reviews/${review_id}`)
       .expect(200)
       .then(({ body }) => {
         expect(typeof body).toBe("object");
-      });
-  });
-  test("getReviewsByID returns correct object keys and values, including comment_count key", () => {
-    return request(app)
-      .get("/api/reviews/3")
-      .expect(200)
-      .then(({ body }) => {
         expect(body.review).toEqual(
           expect.objectContaining({
             title: expect.any(String),
@@ -84,7 +78,6 @@ describe("GET /api/reviews/:review_id", () => {
         expect(body.review.designer).toBe("Akihisa Okui");
         expect(body.review.owner).toBe("bainesface");
         expect(body.review.votes).toBe(5);
-        expect(body.review.comment_count).toBe(3);
       });
   });
   test("returns a 404 status and error message when review_id doesn't exist", () => {
