@@ -11,9 +11,11 @@ const {
 app.get("/api", getMessage);
 app.get("/api/categories", getCategories);
 
-app.use("/*", (req, res) => {
+app.get("/", (req, res, next) => {
   res.status(404).send({ msg: "route is not found" });
-});
+  throw new Error("Something went wrong!");
+})
+
 app.use("/api", (err, req, res, next) => {
   console.log(err.code);
 });
