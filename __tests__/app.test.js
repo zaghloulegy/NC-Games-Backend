@@ -10,17 +10,6 @@ beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 
-  describe("GET /api", () => {
-    test("status: 200, responds with message 'all ok'.", () => {
-      return request(app)
-        .get("/api")
-        .expect(200)
-        .then((res) => {
-          expect(res.body).toEqual({ message: "all ok" });
-        });
-    });
-  });
-
 describe("1- getCategories() GET /api/categories", () => {
   test("getCategories responds with status 200 and returns an object of arrays of categories", () => {
     return request(app)
@@ -40,4 +29,14 @@ describe("1- getCategories() GET /api/categories", () => {
         })
       });
   });
+})
+
+test("status:404, responds with the correct error message when passed a valid but non-existant endpoint", () => {
+  return request(app)
+  .get("/api/apple/")
+  .expect(404)
+  .then(({body}) => {
+  
+    expect(body.msg).toBe("Route is not found")
+  })
 })
