@@ -10,6 +10,18 @@ beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 
+
+describe("test to handle the bad route error", () => {
+  test("status:404, responds with the correct error message when passed a valid but non-existant endpoint", () => {
+    return request(app)
+      .get("/api/apple/")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Route is not found");
+      });
+  });
+});
+
 describe("getCategories() GET /api/categories", () => {
   test("getCategories responds with status 200 and returns an object of arrays of categories", () => {
     return request(app)
@@ -42,12 +54,4 @@ describe("getCategories() GET /api/categories", () => {
 });
 
 
-test("status:404, responds with the correct error message when passed a valid but non-existant endpoint", () => {
-  return request(app)
-  .get("/api/apple/")
-  .expect(404)
-  .then(({body}) => {
-  
-    expect(body.msg).toBe("Route is not found")
-  })
-})
+
