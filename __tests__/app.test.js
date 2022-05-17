@@ -98,7 +98,63 @@ describe("GET /api/reviews/:review_id", () => {
   });
 });
 
-
+describe("patchReviewVotes() PATCH /api/reviews/:review_id", () => {
+  test("patchReviewVotes returns a 200 status with the review item", () => {
+    return request(app)
+      .patch("/api/reviews/2")
+      .send({ inc_votes: 9 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(typeof body).toBe("object");
+      });
+  });
+  test("patchReviewVotes returns a 200 status with the review item updated", () => {
+    return request(app)
+      .patch("/api/reviews/1")
+      .send({ inc_votes: -20 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.review.votes).toBe(-19);
+      });
+  });
+  test("patchReviewVotes ERROR returns a 404 status and error message when review_id doesn't exist", () => {
+    return request(app)
+      .patch("/api/reviews/50")
+      .send({ inc_votes: 1 })
+      .expect(404)
+      .then(({ text }) => {
+        expect(text).toBe("No review found with the review_id: 50");
+      });
+  });
+  test("patchReviewVotes ERROR returns a 400 status and error message when review_id is invalid", () => {
+    return request(app)
+      .patch("/api/reviews/not-id")
+      .send({ inc_votes: 1 })
+      .expect(400)
+      .then(({ text }) => {
+        expect(text).toBe("Invalid request input!");
+      });
+  });
+  test("patchReviewVotes ERROR returns a 400 status and error message when inc_votes isn't valid", () => {
+    return request(app)
+      .patch("/api/reviews/2")
+      .send({ inc_votes: "pies" })
+      .expect(400)
+      .then(({ text }) => {
+        expect(text).toBe("The inc_votes value: 'pies' is not a valid input!");
+      });
+  });
+  test("patchReviewVotes returns a 200 status with the review item unchanged when the inc_votes key is blank.", () => {
+    return request(app)
+      .patch("/api/reviews/1")
+      .send({})
+      .expect(200)
+      .then(({ body }) => {
+        expect(typeof body).toBe("object");
+        expect(body.review.votes).toBe(1);
+      });
+  });
+});
 
 
 
