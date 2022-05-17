@@ -1,12 +1,8 @@
 const { selectUsers } = require("../models/users.model");
 
-exports.getUsers = (req, res, next) => {
-  const { query } = req.query;
-  selectUsers(query)
-    .then((users) => {
-      res.status(200).send({ users });
-    })
-    .catch((err) => {
-      next(err);
-    });
+const getAllUsers = async (req, res, next) => {
+  const users = await selectUsers();
+  res.status(200).send({ users });
 };
+
+module.exports = { getAllUsers };

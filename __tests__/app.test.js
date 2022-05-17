@@ -11,14 +11,12 @@ afterAll(() => db.end());
 
 
 
-describe("test to handle the bad route error", () => {
-  test("status:404, responds with the correct error message when passed a valid but non-existant endpoint", () => {
-    return request(app)
-      .get("/api/apple/")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Route is not found");
-      });
+describe("/api/not-a-path", () => {
+  test("404 - return a custom error msg", async () => {
+    const {
+      body: { message },
+    } = await request(app).get("/api/not-a-path").expect(404);
+    expect(message).toBe("Path does not exist");
   });
 });
 
