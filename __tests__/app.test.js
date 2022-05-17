@@ -175,3 +175,18 @@ describe("getUsers GET /api/users", () => {
 });
 
 
+
+describe("get review by id(comment_count)", ()=> {
+  test("getReviewsByID returns comment_count key", ()=>{
+    return request(app)
+    .get("/api/reviews/3")
+    .expect(200)
+    .then(({ body }) => {
+      expect(body.review).toEqual(
+        expect.objectContaining({
+          comment_count: expect.any(Number)
+        })
+      )
+    })
+  })
+});
