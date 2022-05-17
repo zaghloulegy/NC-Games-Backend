@@ -156,7 +156,7 @@ describe("patchReviewVotes() PATCH /api/reviews/:review_id", () => {
   });
 });
 
-describe.only("getUsers GET /api/users", () => {
+describe("getUsers GET /api/users", () => {
   test("getUsers returns an array of objects, each object will have a username key value pair only", () => {
     return request(app)
       .get("/api/users")
