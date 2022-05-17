@@ -8,9 +8,12 @@ const {
   patchReviewVotes,
 } = require("./controllers/reviews.controller.js");
 
+const { getUsers } = require("./controllers/users.controller.js");
+
 app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReviewWithID);
 app.patch("/api/reviews/:review_id", patchReviewVotes);
+app.get("/api/users", getUsers);
 
 
 app.get("/*", (req, res, next) => {
