@@ -1,12 +1,8 @@
 const { selectCategories } = require("../models/categories.model");
 
-
-exports.getCategories = (req, res, next) => {
-  selectCategories()
-    .then((categories) => {
-      res.status(200).send({ categories });
-    })
-    .catch((err) => {
-      next(err);
-    });
+const getCategories = async (req, res) => {
+  const categories = await selectCategories();
+  res.status(200).send({ categories });
 };
+
+module.exports = { getCategories };
