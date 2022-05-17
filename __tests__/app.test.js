@@ -156,5 +156,22 @@ describe("patchReviewVotes() PATCH /api/reviews/:review_id", () => {
   });
 });
 
+describe.only("getUsers GET /api/users", () => {
+  test("getUsers returns an array of objects, each object will have a username key value pair only", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect(typeof body).toBe("object");
+        expect(Array.isArray(body.users)).toBe(true);
+        expect(body.users.length).toBe(4);
+        expect(body.users[1]).toEqual(
+          expect.objectContaining({
+            username: expect.any(String)
+          })
+        );
+      });
+  });
+});
 
 
