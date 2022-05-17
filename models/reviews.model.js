@@ -13,7 +13,7 @@ exports.selectReviewWithID = (review_id) => {
     })
     .then((results) => {
       const reviewRes = results[1];
-      
+
       if (!reviewRes) {
         return Promise.reject({
           status: 404,
@@ -41,7 +41,6 @@ exports.updateReviewVotes = (review_id, votes) => {
       [newVotes, review_id]
     )
     .then((result) => {
-     
       if (result.rows.length === 0) {
         return Promise.reject({
           status: 404,
