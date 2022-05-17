@@ -1,28 +1,40 @@
 const {
-  selectReviewWithID,
-  updateReviewVotes,
+  selectReviewById,
+  updateReviewById,
+  selectReview,
 } = require("../models/reviews.model");
 
-exports.getReviewWithID = (req, res, next) => {
-  const { review_id } = req.params;
-  selectReviewWithID(review_id)
-    .then((review) => {
-      res.status(200).send({ review });
-    })
-    .catch((err) => {
-      next(err);
-    });
+const getReviewById = async (req, res, next) => {
+  try {
+    const { review_id } = req.params;
+    const review = await selectReviewById(review_id);
+    res.status(200).send({ review });
+  } catch (err) {
+    next(err);
+  }
 };
 
-exports.patchReviewVotes = (req, res, next) => {
-  const { review_id } = req.params;
-  const { inc_votes } = req.body;
-  updateReviewVotes(review_id, inc_votes)
-    .then((review) => {
-    
-      res.status(200).send({ review });
-    })
-    .catch((err) => {
-      next(err);
-    });
+const patchReviewById = async (req, res, next) => {
+  try {
+    const { inc_votes } = req.body;
+    const { review_id } = req.params;
+    const updatedReview = await updateReviewById(review_id, inc_votes);
+    res.status(201).send({ updatedReview });
+  } catch (err) {
+    next(err);
+  }
 };
+
+const getReviews = async (req, res, next) => {
+  try {
+    let { sort_by, order, category, limit, page } = req.query;
+    if (order) order = order.toUpperCase();
+    const reviews = await selectReview(sort_by, order, category, limit, page);
+    res.status(200).send({ reviews });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+module.exports = { getReviewById, patchReviewById, getReviews };

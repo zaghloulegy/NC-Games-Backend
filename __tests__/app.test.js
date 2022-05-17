@@ -22,154 +22,177 @@ describe("test to handle the bad route error", () => {
   });
 });
 
-describe("getCategories() GET /api/categories", () => {
-  test("getCategories responds with status 200 and returns an object of arrays of categories", () => {
-    return request(app)
-      .get("/api/categories")
-      .expect(200)
-      .then(({ body }) => {
-        expect(Array.isArray(body.categories)).toBe(true);
-        expect(body.categories.length).toBe(4);
-      });
-  });
-  test("getCategories returns correct object keys and values", () => {
-    return request(app)
-      .get("/api/categories")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.categories[0].description).toBe(
-          "Abstact games that involve little luck"
-        );
-        expect(body.categories[0].slug).toBe("euro game");
-        body.categories.forEach((category) => {
-          expect(category).toEqual(
-            expect.objectContaining({
-              slug: expect.any(String),
-              description: expect.any(String),
-            })
-          );
+describe("/api/categories", () => {
+  describe("GET", () => {
+    test("200: returns an array of categories", async () => {
+      const {
+        body: { categories },
+      } = await request(app).get("/api/categories").expect(200);
+      expect(Array.isArray(categories)).toBe(true);
+      expect(categories).toHaveLength(4);
+    });
+    test("200: returns categories in the correct format", async () => {
+      const {
+        body: { categories },
+      } = await request(app).get("/api/categories").expect(200);
+      categories.forEach((categories) => {
+        expect(categories).toMatchObject({
+          slug: expect.any(String),
+          description: expect.any(String),
         });
       });
+    });
   });
 });
 
-describe("GET /api/reviews/:review_id", () => {
-  test("getReviewsByID returns correct object keys and values,review object include comment count key", () => {
-    const review_id = 3
-    return request(app)
-      .get(`/api/reviews/${review_id}`)
-      .expect(200)
-      .then(({ body }) => {
-        expect(typeof body).toBe("object");
-        expect(body.review).toEqual(
+describe("/api/reviews/:review_id", () => {
+  describe("GET", () => {
+    test("200: returns a review based on if given", async () => {
+      const {
+        body: { review },
+      } = await request(app).get("/api/reviews/2").expect(200);
+      expect(typeof review).toBe("object");
+      expect(Array.isArray(review)).toBe(false);
+    });
+    test("200: returns an review in correct format", async () => {
+      const {
+        body: { review },
+      } = await request(app).get("/api/reviews/2").expect(200);
+      expect(Object.entries(review)).toHaveLength(10);
+
+      expect(review).toMatchObject({
+        review_id: 2,
+        title: "Jenga",
+        review_body: "Fiddly fun for all the family",
+        designer: "Leslie Scott",
+        review_img_url:
+          "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+        votes: 5,
+        category: "dexterity",
+        owner: "philippaclaire9",
+
+        comment_count: 3,
+      });
+    });
+  })
+  describe("PATCH", () => {
+    test("201: return an updated review working with positive num", async () => {
+      const {
+        body: { updatedReview },
+      } = await request(app)
+        .patch("/api/reviews/2")
+        .send({ inc_votes: 1 })
+        .expect(201);
+      expect(updatedReview).toEqual({
+        review_id: 2,
+        title: "Jenga",
+        review_body: "Fiddly fun for all the family",
+        designer: "Leslie Scott",
+        review_img_url:
+          "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+        votes: 6,
+        category: "dexterity",
+        owner: "philippaclaire9",
+        created_at: expect.any(String),
+      });
+    });
+    test("201: return an updated review working with negative num", async () => {
+      const {
+        body: { updatedReview },
+      } = await request(app)
+        .patch("/api/reviews/2")
+        .send({ inc_votes: -1 })
+        .expect(201);
+      expect(updatedReview.votes).toEqual(4);
+    });
+  })
+})
+
+describe("/api/reviews", () => {
+  describe("GET", () => {
+    test("200: should return all reviews as an array", async () => {
+      const {
+        body: { reviews },
+      } = await request(app).get("/api/reviews").expect(200);
+      expect(Array.isArray(reviews)).toBe(true);
+    });
+    test("200: should return all reviews", async () => {
+      const {
+        body: { reviews },
+      } = await request(app).get("/api/reviews").expect(200);
+      expect(Array.isArray(reviews)).toBe(true);
+      reviews.forEach((review) => {
+        expect(review).toMatchObject(
           expect.objectContaining({
+            review_id: expect.any(Number),
             title: expect.any(String),
-            review_body: expect.any(String),
-            designer: expect.any(String),
             review_img_url: expect.any(String),
             votes: expect.any(Number),
             category: expect.any(String),
             owner: expect.any(String),
-            created_at: expect.any(String),
-            comment_count: expect.any(Number),
-          })
-        );
-        expect(body.review.title).toBe("Ultimate Werewolf");
-        expect(body.review.designer).toBe("Akihisa Okui");
-        expect(body.review.owner).toBe("bainesface");
-        expect(body.review.votes).toBe(5);
-      });
-  });
-  test("returns a 404 status and error message when review_id doesn't exist", () => {
-    return request(app)
-      .get("/api/reviews/100")
-      .expect(404)
-      .then(({ text }) => {
-        expect(text).toBe("No review found with review_id: 100");
-      });
-  });
-  test("returns a 400 status and error message when review_id is invalid", () => {
-    return request(app)
-      .get("/api/reviews/not-id")
-      .expect(400)
-      .then(({ text }) => {
-        expect(text).toBe("Invalid request input!");
-      });
-  });
-});
-
-describe("patchReviewVotes() PATCH /api/reviews/:review_id", () => {
-  test("patchReviewVotes returns a 200 status with the review item", () => {
-    return request(app)
-      .patch("/api/reviews/2")
-      .send({ inc_votes: 9 })
-      .expect(200)
-      .then(({ body }) => {
-        expect(typeof body).toBe("object");
-      });
-  });
-  test("patchReviewVotes returns a 200 status with the review item updated", () => {
-    return request(app)
-      .patch("/api/reviews/1")
-      .send({ inc_votes: -20 })
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.review.votes).toBe(-19);
-      });
-  });
-  test("patchReviewVotes ERROR returns a 404 status and error message when review_id doesn't exist", () => {
-    return request(app)
-      .patch("/api/reviews/50")
-      .send({ inc_votes: 1 })
-      .expect(404)
-      .then(({ text }) => {
-        expect(text).toBe("No review found with the review_id: 50");
-      });
-  });
-  test("patchReviewVotes ERROR returns a 400 status and error message when review_id is invalid", () => {
-    return request(app)
-      .patch("/api/reviews/not-id")
-      .send({ inc_votes: 1 })
-      .expect(400)
-      .then(({ text }) => {
-        expect(text).toBe("Invalid request input!");
-      });
-  });
-  test("patchReviewVotes ERROR returns a 400 status and error message when inc_votes isn't valid", () => {
-    return request(app)
-      .patch("/api/reviews/2")
-      .send({ inc_votes: "pies" })
-      .expect(400)
-      .then(({ text }) => {
-        expect(text).toBe("The inc_votes value: 'pies' is not a valid input!");
-      });
-  });
-  test("patchReviewVotes returns a 200 status with the review item unchanged when the inc_votes key is blank.", () => {
-    return request(app)
-      .patch("/api/reviews/1")
-      .send({})
-      .expect(200)
-      .then(({ body }) => {
-        expect(typeof body).toBe("object");
-        expect(body.review.votes).toBe(1);
-      });
-  });
-});
-
-describe("getUsers GET /api/users", () => {
-  test("getUsers returns an array of objects, each object will have a username key value pair only", () => {
-    return request(app)
-      .get("/api/users")
-      .expect(200)
-      .then(({ body }) => {
-        expect(typeof body).toBe("object");
-        expect(Array.isArray(body.users)).toBe(true);
-        expect(body.users.length).toBe(4);
-        expect(body.users[1]).toEqual(
-          expect.objectContaining({
-            username: expect.any(String)
+            comment_count: expect.any(String),
           })
         );
       });
+    });
+    test("200: if passed valid sort query, sort by it", async () => {
+      const {
+        body: { reviews },
+      } = await request(app).get("/api/reviews?sort_by=votes").expect(200);
+      expect(reviews[0].votes).toBe(100);
+    });
+    test("200: if passed valid sort query, sort by it", async () => {
+      const {
+        body: { reviews },
+      } = await request(app)
+        .get("/api/reviews?sort_by=comment_count")
+        .expect(200);
+      expect(reviews[0].comment_count).toBe("3");
+      expect(reviews[reviews.length - 1].comment_count).toBe("0");
+    });
+    test("200: if passed a order query, toggle ASC and DESC in return", async () => {
+      const {
+        body: { reviews },
+      } = await request(app)
+        .get("/api/reviews?sort_by=comment_count&order=asc")
+        .expect(200);
+      expect(reviews[0].comment_count).toBe("0");
+    });
+    test("200: will filter categories", async () => {
+      const {
+        body: { reviews },
+      } = await request(app).get("/api/reviews?category=eurogame").expect(200);
+      expect(reviews.length).not.toBe(0);
+      expect(
+        reviews.every((review) => {
+          return review.category === "euro game";
+        })
+      ).toBe(true);
+    });
+    test("return an empty array is no reviews in category ", async () => {
+      const {
+        body: { reviews },
+      } = await request(app)
+        .get("/api/reviews?category=childrensgame")
+        .expect(200);
+    });
+    test("200: return 5 reviews as a default limit", async () => {
+      const {
+        body: { reviews },
+      } = await request(app).get("/api/reviews").expect(200);
+      expect(reviews).toHaveLength(5);
+    });
+    test("200: returns num of reviews as limit added by user ", async () => {
+      const {
+        body: { reviews },
+      } = await request(app).get("/api/reviews?limit=10").expect(200);
+      expect(reviews).toHaveLength(10);
+    });
+    test("200: returns correct review when page specified", async () => {
+      const {
+        body: { reviews },
+      } = await request(app).get("/api/reviews?page=3").expect(200);
+      expect(reviews[0].review_id).toBe(3);
+    });
   });
 });
