@@ -54,7 +54,7 @@ describe("getCategories() GET /api/categories", () => {
 });
 
 describe("GET /api/reviews/:review_id", () => {
-  test("getReviewsByID returns correct object keys and values,review object", () => {
+  test("getReviewsByID returns correct object keys and values,review object include comment count key", () => {
     const review_id = 3
     return request(app)
       .get(`/api/reviews/${review_id}`)
@@ -172,21 +172,4 @@ describe("getUsers GET /api/users", () => {
         );
       });
   });
-});
-
-
-
-describe("get review by id(comment_count)", ()=> {
-  test("getReviewsByID returns comment_count key", ()=>{
-    return request(app)
-    .get("/api/reviews/3")
-    .expect(200)
-    .then(({ body }) => {
-      expect(body.review).toEqual(
-        expect.objectContaining({
-          comment_count: expect.any(Number)
-        })
-      )
-    })
-  })
 });
