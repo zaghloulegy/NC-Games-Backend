@@ -204,7 +204,7 @@ describe("/api/reviews/:review_id/comments", () => {
       const {
         body: { comments },
       } = await request(app).get("/api/reviews/2/comments").expect(200);
-      
+      expect(comments.length).toBe(3)
       comments.forEach((comment) => {
         expect(comment).toMatchObject({
           comment_id: expect.any(Number),
@@ -215,12 +215,11 @@ describe("/api/reviews/:review_id/comments", () => {
       });
     });
     test("200: returns an empty array if review has no comments", async () => {
-      
       const {
         body: { comments },
       } = await request(app).get("/api/reviews/1/comments").expect(200);
       expect(Array.isArray(comments)).toBe(true);
-      expect([]).toHaveLength(0);
+      expect(comments.length).toBe(0)
     });
   });
   describe("Error Handling", () => {
