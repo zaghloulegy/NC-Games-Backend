@@ -3,6 +3,7 @@ const {
   updateReviewById,
   selectReview,
   selectCommentsByReviewId,
+  addComment,
 } = require("../models/reviews.model");
 
 const getReviewById = async (req, res, next) => {
@@ -47,9 +48,20 @@ const getCommentsByReviewId = async (req, res, next) => {
   }
 };
 
+const postCommentByReviewId = async (req, res, next) => {
+  try {
+    const { review_id } = req.params;
+    const { username, body } = req.body;
+    const addedComment = await addComment(review_id, username, body);
+    res.status(201).send({ addedComment });
+  } catch (err) {
+    next(err);
+  }
+};
 module.exports = {
   getReviewById,
   patchReviewById,
   getReviews,
   getCommentsByReviewId,
+  postCommentByReviewId,
 };
