@@ -5,7 +5,9 @@ const {
   selectCommentsByReviewId,
   addComment,
   removeCommentById,
-} = require("../models/reviews.model");
+  selectUsers,
+  selectCategories,
+} = require("../models/models");
 
 const getReviewById = async (req, res, next) => {
   try {
@@ -70,12 +72,24 @@ const deleteCommentById = async (req, res, next) => {
   }
 };
 
+const getAllUsers = async (req, res, next) => {
+  const users = await selectUsers();
+  res.status(200).send({ users });
+};
+
+const getCategories = async (req, res) => {
+  const categories = await selectCategories();
+  res.status(200).send({ categories });
+};
+
 
 module.exports = {
   getReviewById,
+  getAllUsers,
   patchReviewById,
   getReviews,
   getCommentsByReviewId,
   postCommentByReviewId,
   deleteCommentById,
+  getCategories,
 };

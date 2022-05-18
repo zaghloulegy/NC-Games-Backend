@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 
-const { getCategories } = require("./controllers/categories.controller.js");
 const {
   getReviewById,
   patchReviewById,
@@ -10,9 +9,11 @@ const {
   getCommentsByReviewId,
   postCommentByReviewId,
   deleteCommentById,
-} = require("./controllers/reviews.controller.js");
+  getCategories,
+  getAllUsers,
+} = require("./controllers/controllers");
 
-const { getAllUsers } = require("./controllers/users.controller.js");
+
 
 app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews)
