@@ -222,20 +222,110 @@ describe("/api/reviews/:review_id/comments", () => {
       expect(comments.length).toBe(0)
     });
   });
-  describe("Error Handling", () => {
-    test("if passed an id that is not a num, send back custom message", async () => {
+});
+
+
+describe("POST", () => {
+    test("201: return the comment posted", async () => {
       const {
-        body: { message },
+        body: { addedComment },
       } = await request(app)
-        .get("/api/reviews/invalid_id/comments")
-        .expect(400);
-      expect(message).toBe("Invalid Review Id");
+        .post("/api/reviews/2/comments")
+        .send({
+          username: "mallionaire",
+          body: "NEW COMMENT! <3",
+        })
+        .expect(201);
+      expect(addedComment).toMatchObject({
+        comment_id: 7,
+        author: "mallionaire",
+        votes: 0,
+        body: "NEW COMMENT! <3",
+      });
     });
-    test("if passed an id that doesnt exist, send back custom message", async () => {
+    test("comments table is actually updated with comment", async () => {
       const {
-        body: { message },
-      } = await request(app).get("/api/reviews/20000/comments").expect(404);
-      expect(message).toBe("Review not found");
+        body: { addedComment },
+      } = await request(app)
+        .post("/api/reviews/2/comments")
+        .send({
+          username: "mallionaire",
+          body: "NEW COMMENT! <3",
+        })
+        .expect(201);
+      const { rows: testCommentsDB } = await db.query(`SELECT * from comments`);
+      expect(testCommentsDB).toHaveLength(7);
+      expect(testCommentsDB[testCommentsDB.length - 1]).toMatchObject({
+        comment_id: 7,
+        author: "mallionaire",
+        votes: 0,
+        body: "NEW COMMENT! <3",
+      });
+    });
+    test("comments table is actually updated with comment", async () => {
+      const {
+        body: { addedComment },
+      } = await request(app)
+        .post("/api/reviews/2/comments")
+        .send({
+          username: "mallionaire",
+          body: "NEW COMMENT! <3",
+          votes: 7,
+        })
+        .expect(201);
+      const { rows: testCommentsDB } = await db.query(`SELECT * from comments`);
+      expect(testCommentsDB).toHaveLength(7);
+      expect(testCommentsDB[testCommentsDB.length - 1]).toMatchObject({
+        comment_id: 7,
+        author: "mallionaire",
+        votes: 0,
+        body: "NEW COMMENT! <3",
+      });
+    });
+    describe("Error Handling", () => {
+      test("if passed wrong keys, return custom err message", async () => {
+        const {
+          body: { message },
+        } = await request(app)
+          .post("/api/reviews/2/comments")
+          .send({
+            invalid_username: "mallionaire",
+            body: "NEW COMMENT! <3",
+          })
+          .expect(400);
+        expect(message).toBe("Invalid username key or value");
+      });
+      test("if passed wrong keys, return custom err message", async () => {
+        const {
+          body: { message },
+        } = await request(app)
+          .post("/api/reviews/2/comments")
+          .send({
+            username: "mallionaire",
+            invalid_body: "NEW COMMENT! <3",
+          })
+          .expect(400);
+        expect(message).toBe("Invalid body key or value");
+      });
+      test("if passed an id that is not a num, send back custom message", async () => {
+        const {
+          body: { message },
+        } = await request(app)
+          .post("/api/reviews/invalid_id/comments")
+          .expect(400);
+        expect(message).toBe("Invalid Review Id");
+      });
+      test("if passed an id that doesnt exist, send back custom message", async () => {
+        const {
+          body: { message },
+        } = await request(app)
+          .post("/api/reviews/20000/comments")
+          .send({
+            username: "mallionaire",
+            body: "NEW COMMENT! <3",
+          })
+          .expect(404);
+        expect(message).toBe("Review not found");
+      });
     });
   });
-});

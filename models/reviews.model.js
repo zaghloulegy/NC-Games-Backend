@@ -146,9 +146,34 @@ const selectCommentsByReviewId = async (review_id) => {
   return comments;
 };
 
+const addComment = async (review_id, username, body) => {
+  await selectReviewById(review_id);
+
+  if (typeof username !== "string") {
+    return Promise.reject({
+      status: 400,
+      message: "Invalid username key or value",
+    });
+  } else if (typeof body !== "string") {
+    return Promise.reject({
+      status: 400,
+      message: "Invalid body key or value",
+    });
+  }
+  let queryStr = `INSERT INTO comments
+        (author, review_id, votes, created_at, body)
+        VALUES
+        ($1, $2, $3, $4, $5)
+        RETURNING*`;
+  const queryValues = [username, review_id, 0, new Date(), body];
+  const { rows: addedComment } = await db.query(queryStr, queryValues);
+  delete addedComment[0].review_id;
+  return addedComment[0];
+};
 module.exports = {
   updateReviewById,
   selectReviewById,
   selectReview,
   selectCommentsByReviewId,
+  addComment,
 };
