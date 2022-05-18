@@ -134,5 +134,21 @@ const selectReview = async (
   return reviews;
 };
 
+const selectCommentsByReviewId = async (review_id) => {
+  await selectReviewById(review_id);
 
-module.exports = { updateReviewById, selectReviewById, selectReview };
+  let queryStr = `SELECT * FROM comments WHERE review_id = $1`;
+  const queryValues = [review_id];
+  const { rows: comments } = await db.query(queryStr, queryValues);
+  comments.forEach((comment) => {
+    delete comment.review_id;
+  });
+  return comments;
+};
+
+module.exports = {
+  updateReviewById,
+  selectReviewById,
+  selectReview,
+  selectCommentsByReviewId,
+};

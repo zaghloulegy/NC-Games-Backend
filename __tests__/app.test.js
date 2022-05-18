@@ -194,3 +194,34 @@ describe("/api/reviews", () => {
     });
   });
 });
+
+describe("/api/reviews/:review_id/comments", () => {
+  describe("GET", () => {
+    test("200: returns an array of comments", async () => {
+      const {
+        body: { comments },
+      } = await request(app).get("/api/reviews/2/comments").expect(200);
+      expect(Array.isArray(comments)).toBe(true);
+    });
+    test("200: returns an array of comments in correct format", async () => {
+      const {
+        body: { comments },
+      } = await request(app).get("/api/reviews/2/comments").expect(200);
+
+      comments.forEach((comment) => {
+        expect(comment).toMatchObject({
+          comment_id: expect.any(Number),
+          author: expect.any(String),
+          votes: expect.any(Number),
+          body: expect.any(String),
+        });
+      });
+    });
+    test("200: returns an empty array if review has no comments", async () => {
+      const {
+        body: { comments },
+      } = await request(app).get("/api/reviews/1/comments").expect(200);
+      expect(Array.isArray(comments)).toBe(true);
+    });
+  });
+});
