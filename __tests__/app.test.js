@@ -222,22 +222,6 @@ describe("/api/reviews/:review_id/comments", () => {
       expect(comments.length).toBe(0)
     });
   });
-  describe("Error Handling", () => {
-    test("if passed an id that is not a num, send back custom message", async () => {
-      const {
-        body: { message },
-      } = await request(app)
-        .get("/api/reviews/invalid_id/comments")
-        .expect(400);
-      expect(message).toBe("Invalid Review Id");
-    });
-    test("if passed an id that doesnt exist, send back custom message", async () => {
-      const {
-        body: { message },
-      } = await request(app).get("/api/reviews/20000/comments").expect(404);
-      expect(message).toBe("Review not found");
-    });
-  });
 });
 
 
