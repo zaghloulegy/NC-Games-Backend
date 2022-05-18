@@ -191,7 +191,7 @@ describe("/api/reviews", () => {
     });
   });
 });
- describe("Error Handling for query review", () => {
+describe("Error Handling for query review", () => {
    test("should return custom message if invalid sort_by", async () => {
      const {
        body: { message },
@@ -214,7 +214,7 @@ describe("/api/reviews", () => {
        .expect(400);
      expect(message).toBe("Invalid category declared");
    });
- });
+});
 
 describe("/api/reviews/:review_id/comments", () => {
   describe("GET", () => {
@@ -247,9 +247,6 @@ describe("/api/reviews/:review_id/comments", () => {
     });
   });
 });
-
-
-
 
 describe("POST", () => {
     test("201: return the comment posted", async () => {
@@ -355,3 +352,29 @@ describe("POST", () => {
       });
     });
   });
+
+  describe("/api/comments/:comment_id", () => {
+    describe("DELETE", () => {
+      test("204 ", async () => {
+        await request(app).delete("/api/comments/3").expect(204);
+        const { rows: comment } = await db.query(
+          `SELECT * from comments WHERE comment_id = 3`
+        );
+        expect(comment).toEqual([]);
+      });
+    });
+    describe("Error Handling delete", () => {
+      test("return custom message if invalid id", async () => {
+        const {
+          body: { message },
+        } = await request(app).delete("/api/comments/invalid_id").expect(400);
+        expect(message).toEqual("Invalid Comment Id");
+      });
+      test("return custom message if no comment id found", async () => {
+        const {
+          body: { message },
+        } = await request(app).delete("/api/comments/9999").expect(404);
+        expect(message).toEqual("Comment Id Not Found");
+      });
+    });
+  })
