@@ -103,6 +103,25 @@ describe("/api/reviews/:review_id", () => {
   });
 });
 
+describe("/api/users", () => {
+  describe("GET", () => {
+    test("200: returns an array of users in correct format", async () => {
+      const {
+        body: { users },
+      } = await request(app).get("/api/users").expect(200);
+      expect(Array.isArray(users)).toBe(true);
+      users.forEach((user) => {
+        expect(user).toMatchObject({
+          username: expect.any(String),
+        });
+      });
+    });
+    
+    describe("Error Handling", () => {
+      test("404", () => {});
+    });
+  });
+});
 describe("/api/reviews", () => {
   describe("GET", () => {
     test("200: should return all reviews as an array", async () => {
