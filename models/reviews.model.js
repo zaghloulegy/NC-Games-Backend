@@ -170,10 +170,25 @@ const addComment = async (review_id, username, body) => {
   delete addedComment[0].review_id;
   return addedComment[0];
 };
+
+const removeCommentById = async (comment_id) => {
+  if (/\d+$/.test(comment_id)) {
+    const { rows: comment } = await db.query(
+      `DELETE from comments WHERE comment_id = $1 RETURNING *`,
+      [comment_id]
+    );
+    if (comment.length === 0)
+      return Promise.reject({ status: 404, message: "Comment Id Not Found" });
+  } else {
+    return Promise.reject({ status: 400, message: "Invalid Comment Id" });
+  }
+};
+
 module.exports = {
   updateReviewById,
   selectReviewById,
   selectReview,
   selectCommentsByReviewId,
   addComment,
+  removeCommentById,
 };
