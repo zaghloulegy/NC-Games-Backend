@@ -1,15 +1,12 @@
 process.env.NODE_ENV = "test";
 const db = require("../db/connection.js");
 const testData = require("../db/data/test-data/index.js");
-const seed = require("../db/seeds/seed")
-const request = require("supertest")
-const app = require("../app")
-
+const seed = require("../db/seeds/seed");
+const request = require("supertest");
+const app = require("../app");
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
-
-
 
 describe("/api/not-a-path", () => {
   test("404 - return a custom error msg", async () => {
@@ -72,7 +69,7 @@ describe("/api/reviews/:review_id", () => {
         comment_count: 3,
       });
     });
-  })
+  });
   describe("PATCH", () => {
     test("201: return an updated review working with positive num", async () => {
       const {
@@ -103,8 +100,8 @@ describe("/api/reviews/:review_id", () => {
         .expect(201);
       expect(updatedReview.votes).toEqual(4);
     });
-  })
-})
+  });
+});
 
 describe("/api/reviews", () => {
   describe("GET", () => {
@@ -207,7 +204,7 @@ describe("/api/reviews/:review_id/comments", () => {
       const {
         body: { comments },
       } = await request(app).get("/api/reviews/2/comments").expect(200);
-
+      expect(comments).toHaveLength(3);
       comments.forEach((comment) => {
         expect(comment).toMatchObject({
           comment_id: expect.any(Number),
@@ -222,6 +219,22 @@ describe("/api/reviews/:review_id/comments", () => {
         body: { comments },
       } = await request(app).get("/api/reviews/1/comments").expect(200);
       expect(Array.isArray(comments)).toBe(true);
+    });
+  });
+  describe("Error Handling", () => {
+    test("if passed an id that is not a num, send back custom message", async () => {
+      const {
+        body: { message },
+      } = await request(app)
+        .get("/api/reviews/invalid_id/comments")
+        .expect(400);
+      expect(message).toBe("Invalid Review Id");
+    });
+    test("if passed an id that doesnt exist, send back custom message", async () => {
+      const {
+        body: { message },
+      } = await request(app).get("/api/reviews/20000/comments").expect(404);
+      expect(message).toBe("Review not found");
     });
   });
 });
