@@ -191,6 +191,30 @@ describe("/api/reviews", () => {
     });
   });
 });
+ describe("Error Handling for query review", () => {
+   test("should return custom message if invalid sort_by", async () => {
+     const {
+       body: { message },
+     } = await request(app)
+       .get("/api/reviews?sort_by=invalid_sort_by")
+       .expect(400);
+     expect(message).toBe("Invalid 'sort by' term. It does not exist");
+   });
+   test("should return custom message if invalid order", async () => {
+     const {
+       body: { message },
+     } = await request(app).get("/api/reviews?order=invalid_order").expect(400);
+     expect(message).toBe("Invalid order declared");
+   });
+   test("should return custom message if invalid category given", async () => {
+     const {
+       body: { message },
+     } = await request(app)
+       .get("/api/reviews?category=invalid_category")
+       .expect(400);
+     expect(message).toBe("Invalid category declared");
+   });
+ });
 
 describe("/api/reviews/:review_id/comments", () => {
   describe("GET", () => {
@@ -223,6 +247,8 @@ describe("/api/reviews/:review_id/comments", () => {
     });
   });
 });
+
+
 
 
 describe("POST", () => {
