@@ -11,10 +11,11 @@ const {
   deleteCommentById,
   getCategories,
   getAllUsers,
+  getEndPoints,
 } = require("./controllers/controllers");
 
 
-
+app.get("/api", getEndPoints);
 app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews)
 app.get("/api/reviews/:review_id", getReviewById);

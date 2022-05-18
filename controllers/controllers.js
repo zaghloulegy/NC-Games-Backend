@@ -7,6 +7,7 @@ const {
   removeCommentById,
   selectUsers,
   selectCategories,
+  selectEndPoints,
 } = require("../models/models");
 
 const getReviewById = async (req, res, next) => {
@@ -82,6 +83,11 @@ const getCategories = async (req, res) => {
   res.status(200).send({ categories });
 };
 
+const getEndPoints = async (req, res, next) => {
+  const endPoints = await selectEndPoints();
+  res.status(200).send(endPoints);
+};
+
 
 module.exports = {
   getReviewById,
@@ -92,4 +98,5 @@ module.exports = {
   postCommentByReviewId,
   deleteCommentById,
   getCategories,
+  getEndPoints,
 };
