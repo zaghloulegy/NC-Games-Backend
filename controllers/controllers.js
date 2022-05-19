@@ -1,3 +1,5 @@
+const fs = require("fs/promises");
+
 const {
   selectReviewById,
   updateReviewById,
@@ -84,10 +86,9 @@ const getCategories = async (req, res) => {
 };
 
 const getEndPoints = async (req, res, next) => {
-  const endPoints = await selectEndPoints();
-  res.status(200).send(endPoints);
+  const endPoints = await fs.readFile("./endpoints.json", "utf-8");
+  res.status(200).send(JSON.parse(endPoints));
 };
-
 
 module.exports = {
   getReviewById,

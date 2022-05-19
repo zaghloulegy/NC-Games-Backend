@@ -382,12 +382,23 @@ describe("POST", () => {
   describe("/api", () => {
     describe("GET", () => {
       test("200: returns object will all endpoints", async () => {
-        const { body: endPoints } = await request(app).get("/api").expect(200);
-        expect(endPoints).toMatchObject({
+        const {body}  = await request(app).get("/api").expect(200);
+        expect(body).toMatchObject({
           "GET /api": {
             description:
               "serves up a json representation of all the available endpoints of the api",
-          }
+          },
+          "GET /api/categories": {
+            description: "serves an array of all categories",
+            queries: [],
+            exampleResponse: expect.any(Object),
+          },
+          "GET /api/reviews": {
+            description:
+              "serves an array of all reviews",
+            queries: ["category", "sort_by", "order"],
+            exampleResponse: expect.any(Object),
+          },
         });
       });
     });

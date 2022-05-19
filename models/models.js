@@ -1,5 +1,5 @@
 const db = require("../db/connection");
-const fs = require("fs");
+
 const { query } = require("../db/connection");
 
 
@@ -197,14 +197,7 @@ const selectCategories = async () => {
   return categories;
 };
 
-const selectEndPoints = async () => {
-  const fsPromises = require("fs").promises;
-  const data = await fsPromises
-    .readFile("./endpoints.json", "utf-8")
-    .catch((err) => console.error("Failed to read file", err));
 
-  return JSON.parse(data.toString());
-};
 
 module.exports = {
   updateReviewById,
@@ -215,5 +208,5 @@ module.exports = {
   removeCommentById,
   selectUsers,
   selectCategories,
-  selectEndPoints,
+
 };
