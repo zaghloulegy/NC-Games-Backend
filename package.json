@@ -7,7 +7,8 @@
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "node ./db/seeds/run-seed.js",
     "test": "jest",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "seed:prod": "NODE_ENV=production postgresql-adjacent-55195=$(heroku config:get postgresql-adjacent-55195) npm run seed"
   },
   "repository": {
     "type": "git",
@@ -34,7 +35,8 @@
   },
   "jest": {
     "setupFilesAfterEnv": [
-      "jest-extended/all","jest-sorted"
+      "jest-extended/all",
+      "jest-sorted"
     ]
   }
 }
