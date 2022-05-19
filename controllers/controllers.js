@@ -89,6 +89,8 @@ const getEndPoints = async (req, res, next) => {
   res.status(200).send(JSON.parse(endPoints));
 };
 
+
+
 module.exports = {
   getReviewById,
   getAllUsers,
