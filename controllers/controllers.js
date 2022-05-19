@@ -13,6 +13,11 @@ const {
   updateComment,
 } = require("../models/models");
 
+const getCategories = async (req, res) => {
+  const categories = await selectCategories();
+  res.status(200).send({ categories });
+};
+
 const getReviewById = async (req, res, next) => {
   try {
     const { review_id } = req.params;
@@ -81,10 +86,7 @@ const getAllUsers = async (req, res, next) => {
   res.status(200).send({ users });
 };
 
-const getCategories = async (req, res) => {
-  const categories = await selectCategories();
-  res.status(200).send({ categories });
-};
+
 
 const getEndPoints = async (req, res, next) => {
   const endPoints = await fs.readFile("./endpoints.json", "utf-8");

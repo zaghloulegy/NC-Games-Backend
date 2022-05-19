@@ -1,13 +1,22 @@
 const app = require("../app");
 
+const { getEndPoints } = require("../controllers/controllers");
+
+const categoriesRouter = require("./categories.routers");
+
+const commentsRouter = require("./comments.routers");
+
+const reviewRouter = require("./review.routers");
+
+const usersRouter = require("./users.routers");
+
 const apiRouter = require("express").Router();
 
-const categoriesRouter = require("../routers/categories.routers");
+apiRouter.get("/", getEndPoints);
 
-const commentsRouter = require("../routers/comments.routers");
-
-const reviewsRouter = require("../routers/reviews.routers");
-
-const usersRouter = require("../routers/users.routers");
+apiRouter.use("/comments", commentsRouter);
+apiRouter.use("/users", usersRouter);
+apiRouter.use("/categories", categoriesRouter);
+apiRouter.use("/reviews", reviewRouter);
 
 module.exports = apiRouter;

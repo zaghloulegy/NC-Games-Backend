@@ -1,5 +1,12 @@
 const db = require("../db/connection");
 
+
+const selectCategories = async () => {
+  
+  const { rows: categories } = await db.query("SELECT * FROM categories");
+  return categories;
+};
+
 const selectReviewById = async (review_id) => {
   if (/\d+$/.test(review_id)) {
     const { rows: review } = await db.query(
@@ -189,10 +196,7 @@ const selectUsers = async () => {
   return users;
 };
 
-const selectCategories = async () => {
-  const { rows: categories } = await db.query("SELECT * FROM categories");
-  return categories;
-};
+
 
 const selectUserById = async (username) => {
   const { rows: user } = await db.query(
