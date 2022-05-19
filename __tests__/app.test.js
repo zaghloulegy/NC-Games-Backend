@@ -402,3 +402,27 @@ describe("POST", () => {
       });
     });
   });
+
+  describe("/api/users/:username", () => {
+    describe("GET", () => {
+      test("200: returns to correct user when passed username", async () => {
+        const {
+          body: { user },
+        } = await request(app).get("/api/users/mallionaire").expect(200);
+        expect(user).toMatchObject({
+          username: "mallionaire",
+          avatar_url:
+            "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+          name: "haz",
+        });
+      });
+      describe("Error Handling  ", () => {
+        test("If passed username doesnt exist, return a custom message", async () => {
+          const {
+            body: { message },
+          } = await request(app).get("/api/users/newusername2021").expect(404);
+          expect(message).toEqual("Username does not exist");
+        });
+      });
+    });
+  });

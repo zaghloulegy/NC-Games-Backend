@@ -1,8 +1,5 @@
 const db = require("../db/connection");
 
-const { query } = require("../db/connection");
-
-
 const selectReviewById = async (review_id) => {
   if (/\d+$/.test(review_id)) {
     const { rows: review } = await db.query(
@@ -197,6 +194,17 @@ const selectCategories = async () => {
   return categories;
 };
 
+const selectUserById = async (username) => {
+  const { rows: user } = await db.query(
+    `SELECT * FROM users WHERE username = $1`,
+    [username]
+  );
+  if (user.length === 0)
+    return Promise.reject({ status: 404, message: "Username does not exist" });
+  return user[0];
+};
+
+
 
 
 module.exports = {
@@ -208,5 +216,5 @@ module.exports = {
   removeCommentById,
   selectUsers,
   selectCategories,
-
+  selectUserById,
 };

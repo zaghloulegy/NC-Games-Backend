@@ -9,6 +9,7 @@ const {
   removeCommentById,
   selectUsers,
   selectCategories,
+  selectUserById,
 } = require("../models/models");
 
 const getReviewById = async (req, res, next) => {
@@ -89,6 +90,16 @@ const getEndPoints = async (req, res, next) => {
   res.status(200).send(JSON.parse(endPoints));
 };
 
+const getUserByUsername = async (req, res, next) => {
+  try {
+    const { username } = req.params;
+    const user = await selectUserById(username);
+    res.status(200).send({ user });
+  } catch (err) {
+    next(err);
+  }
+};
+
 
 
 module.exports = {
@@ -101,4 +112,5 @@ module.exports = {
   deleteCommentById,
   getCategories,
   getEndPoints,
+  getUserByUsername,
 };
