@@ -382,7 +382,7 @@ describe("POST", () => {
   describe("/api", () => {
     describe("GET", () => {
       test("200: returns object will all endpoints", async () => {
-        const {body}  = await request(app).get("/").expect(200);
+        const {body}  = await request(app).get("/api").expect(200);
         expect(body).toMatchObject({
           "GET /api": {
             description:

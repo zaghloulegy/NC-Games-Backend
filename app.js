@@ -17,7 +17,7 @@ const {
 
 
 
-app.get("/", getEndPoints);
+app.get("/api", getEndPoints);
 app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews)
 app.get("/api/reviews/:review_id", getReviewById);
