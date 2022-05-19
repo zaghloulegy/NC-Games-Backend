@@ -387,18 +387,7 @@ describe("POST", () => {
           "GET /api": {
             description:
               "serves up a json representation of all the available endpoints of the api",
-          },
-          "GET /api/categories": {
-            description: "serves an array of all categories",
-            queries: [],
-            exampleResponse: expect.any(Object),
-          },
-          "GET /api/reviews": {
-            description:
-              "serves an array of all reviews",
-            queries: ["category", "sort_by", "order", "page", "limit"],
-            exampleResponse: expect.any(Object),
-          },
+          }
         });
       });
     });
