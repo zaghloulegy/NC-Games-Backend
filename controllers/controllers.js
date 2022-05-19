@@ -10,6 +10,7 @@ const {
   selectUsers,
   selectCategories,
   selectUserById,
+  updateComment,
 } = require("../models/models");
 
 const getReviewById = async (req, res, next) => {
@@ -100,7 +101,16 @@ const getUserByUsername = async (req, res, next) => {
   }
 };
 
-
+const patchCommentById = async (req, res, next) => {
+  try {
+    const { comment_id } = req.params;
+    const { inc_votes } = req.body;
+    const updatedComment = await updateComment(comment_id, inc_votes);
+    res.status(201).send({ updatedComment });
+  } catch (err) {
+    next(err);
+  }
+};
 
 module.exports = {
   getReviewById,
@@ -113,4 +123,5 @@ module.exports = {
   getCategories,
   getEndPoints,
   getUserByUsername,
+  patchCommentById,
 };

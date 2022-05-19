@@ -204,7 +204,41 @@ const selectUserById = async (username) => {
   return user[0];
 };
 
+const updateComment = async (comment_id, inc_votes) => {
+  if (/\d+$/.test(comment_id)) {
+    if (inc_votes) {
+      if (!/\d+$/.test(inc_votes)) {
+        return Promise.reject({
+          status: 400,
+          message: "inc_votes must be a number",
+        });
+      }
+      const { rows: updateComment } = await db.query(
+        `
+      UPDATE comments SET votes = votes + $1
+      WHERE comment_id = $2 RETURNING *;
+      `,
+        [inc_votes, comment_id]
+      );
 
+      if (updateComment.length === 0) {
+        return Promise.reject({ status: 400, message: "Comment ID not found" });
+      }
+
+      return updateComment[0];
+    } else {
+      return Promise.reject({
+        status: 400,
+        message: "Incorrect key, cannot patch",
+      });
+    }
+  } else {
+    return Promise.reject({
+      status: 404,
+      message: "Invalid Comment ID",
+    });
+  }
+};
 
 
 module.exports = {
@@ -217,4 +251,5 @@ module.exports = {
   selectUsers,
   selectCategories,
   selectUserById,
+  updateComment,
 };
