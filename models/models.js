@@ -1,5 +1,8 @@
 const db = require("../db/connection");
 
+const { query } = require("../db/connection");
+
+
 const selectReviewById = async (review_id) => {
   if (/\d+$/.test(review_id)) {
     const { rows: review } = await db.query(
@@ -194,6 +197,8 @@ const selectCategories = async () => {
   return categories;
 };
 
+
+
 module.exports = {
   updateReviewById,
   selectReviewById,
@@ -203,4 +208,5 @@ module.exports = {
   removeCommentById,
   selectUsers,
   selectCategories,
+
 };
