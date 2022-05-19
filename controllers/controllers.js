@@ -9,7 +9,6 @@ const {
   removeCommentById,
   selectUsers,
   selectCategories,
-  selectEndPoints,
 } = require("../models/models");
 
 const getReviewById = async (req, res, next) => {
