@@ -14,9 +14,6 @@ const {
   getEndPoints,
 } = require("./controllers/controllers");
 
-app.get("/", (req, res) => {
-  console.log(req)
-})
 
 
 app.get("/api", getEndPoints);
