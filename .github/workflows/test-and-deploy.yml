@@ -12,7 +12,7 @@ jobs:
       - name: Say hello
         run: echo 'hello world from CI'
 
-  test-utils:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and clone repo
