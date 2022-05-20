@@ -174,7 +174,7 @@ const addComment = async (review_id, username, body) => {
         RETURNING*`;
   const queryValues = [username, review_id, 0, new Date(), body];
   const { rows: addedComment } = await db.query(queryStr, queryValues);
-  delete addedComment[0].review_id;
+  // delete addedComment[0].review_id;
   return addedComment[0];
 };
 
