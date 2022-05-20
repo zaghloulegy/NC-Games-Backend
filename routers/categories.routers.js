@@ -3,15 +3,16 @@ const app = express();
 app.use(express.json());
 const categoriesRouter = require("express").Router();
 
-
-
-
 const {
   getCategories,
   getReviewById,
   patchReviewById,
   getAllUsers,
 } = require("../controllers/controllers");
+
+categoriesRouter.route("/").get(getCategories);
+
+
 
 app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReviewById);
@@ -40,6 +41,6 @@ app.use((err, req, res, next) => {
 });
 
 
-categoriesRouter.route("/").get(getCategories);
+
 
 module.exports = categoriesRouter; 
