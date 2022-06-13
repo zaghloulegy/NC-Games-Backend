@@ -17,7 +17,7 @@ The intention here was to mimic the building of a real backend service which wil
 ## Instructions of how to clone, install dependencies, seed local database, and run tests
 
 - Clone git repo from https://github.com/zaghloulegy/NC-Games
-- Once cloned, run `npm instal ` to install dependencies
+- Once cloned, run `npm install ` to install dependencies
 - run `npm setup-dbs`to start the Database in postgres
 - run `npm run test` to run all the Jest tests
 
